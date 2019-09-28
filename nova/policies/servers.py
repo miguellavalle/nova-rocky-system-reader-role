@@ -54,7 +54,8 @@ rules = [
         ]),
     policy.DocumentedRuleDefault(
         SERVERS % 'detail:get_all_tenants',
-        base.RULE_ADMIN_API,
+        base.policy_or(base.RULE_ADMIN_API,
+                       base.SYSTEM_READER),
         "List all servers with detailed information for all projects",
         [
             {
@@ -76,7 +77,8 @@ rules = [
     # should do that by default.
     policy.DocumentedRuleDefault(
         SERVERS % 'show:host_status',
-        base.RULE_ADMIN_API,
+        base.policy_or(base.RULE_ADMIN_API,
+                       base.SYSTEM_READER),
         "Show a server with additional host status information",
         [
             {

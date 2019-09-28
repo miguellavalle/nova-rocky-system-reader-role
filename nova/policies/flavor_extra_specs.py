@@ -24,7 +24,8 @@ POLICY_ROOT = 'os_compute_api:os-flavor-extra-specs:%s'
 flavor_extra_specs_policies = [
     policy.DocumentedRuleDefault(
         POLICY_ROOT % 'show',
-        base.RULE_ADMIN_OR_OWNER,
+        base.policy_or(base.RULE_ADMIN_OR_OWNER,
+                       base.SYSTEM_READER),
         "Show an extra spec for a flavor",
         [
             {

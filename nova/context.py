@@ -205,6 +205,7 @@ class RequestContext(context.RequestContext):
             values,
             user_id=values.get('user_id'),
             project_id=values.get('project_id'),
+            system_scope=values.get('system_scope'),
             # TODO(sdague): oslo.context has show_deleted, if
             # possible, we should migrate to that in the future so we
             # don't need to be different here.
@@ -306,11 +307,18 @@ def is_user_context(context):
     return True
 
 
+def is_system_scope_all(context):
+    """Indicate if the request context has system scope all."""
+    if context.system_scope == 'all':
+        return True
+
+
 def require_context(ctxt):
     """Raise exception.Forbidden() if context is not a user or an
     admin context.
     """
-    if not ctxt.is_admin and not is_user_context(ctxt):
+    if not (ctxt.is_admin or is_system_scope_all(ctxt) or
+            is_user_context(ctxt)):
         raise exception.Forbidden()
 
 

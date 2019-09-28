@@ -2220,7 +2220,7 @@ def instance_get_all_by_filters_sort(context, filters, limit=None, marker=None,
         query_prefix = query_prefix.filter(~models.Instance.tags.any(
             models.Tag.tag.in_(tags)))
 
-    if not context.is_admin:
+    if not (context.is_admin or context.system_scope == 'all'):
         # If we're not admin context, add appropriate filter..
         if context.project_id:
             filters['project_id'] = context.project_id

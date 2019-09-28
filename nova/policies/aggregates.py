@@ -74,7 +74,8 @@ aggregates_policies = [
         ]),
     policy.DocumentedRuleDefault(
         POLICY_ROOT % 'index',
-        base.RULE_ADMIN_API,
+        base.policy_or(base.RULE_ADMIN_API,
+                       base.SYSTEM_READER),
         "List all aggregates",
         [
             {
@@ -94,7 +95,8 @@ aggregates_policies = [
         ]),
     policy.DocumentedRuleDefault(
         POLICY_ROOT % 'show',
-        base.RULE_ADMIN_API,
+        base.policy_or(base.RULE_ADMIN_API,
+                       base.SYSTEM_READER),
         "Show details for an aggregate",
         [
             {

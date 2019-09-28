@@ -24,7 +24,8 @@ BASE_POLICY_NAME = 'os_compute_api:os-hypervisors'
 hypervisors_policies = [
     policy.DocumentedRuleDefault(
         BASE_POLICY_NAME,
-        base.RULE_ADMIN_API,
+        base.policy_or(base.RULE_ADMIN_API,
+                       base.SYSTEM_READER),
         """Policy rule for hypervisor related APIs.
 
 This rule will be checked for the following APIs:

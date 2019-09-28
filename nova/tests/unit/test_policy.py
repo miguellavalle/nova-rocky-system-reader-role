@@ -446,6 +446,16 @@ class RealRolePolicyTestCase(test.NoDBTestCase):
 "os_compute_api:os-quota-sets:defaults",
 )
 
+        self.system_scope_all_rules = (
+"os_compute_api:os-aggregates:index",
+"os_compute_api:os-aggregates:show",
+"os_compute_api:os-flavor-extra-specs:show",
+"os_compute_api:os-hypervisors",
+"os_compute_api:os-quota-sets:show",
+"os_compute_api:servers:detail:get_all_tenants",
+"os_compute_api:servers:show:host_status",
+)
+
     def test_all_rules_in_sample_file(self):
         special_rules = ["context_is_admin", "admin_or_owner", "default"]
         for (name, rule) in self.fake_policy.items():
@@ -488,3 +498,17 @@ class RealRolePolicyTestCase(test.NoDBTestCase):
             self.admin_or_owner_rules + self.non_admin_only_rules +
             self.allow_all_rules + special_rules)
         self.assertEqual(set([]), result)
+
+    def test_system_reader_rules(self):
+        system_reader_context = context.RequestContext(
+                'fake', 'fake', False, roles=['reader'], system_scope='all')
+        reader_context = context.RequestContext(
+                'fake', 'fake', False, roles=['reader'])
+        system_other_context = context.RequestContext(
+                'fake', 'fake', False, roles=['other'], system_scope='all')
+        for rule in self.system_scope_all_rules:
+            policy.authorize(system_reader_context, rule, self.target)
+            self.assertRaises(exception.PolicyNotAuthorized, policy.authorize,
+                              reader_context, rule, self.target)
+            self.assertRaises(exception.PolicyNotAuthorized, policy.authorize,
+                              system_other_context, rule, self.target)

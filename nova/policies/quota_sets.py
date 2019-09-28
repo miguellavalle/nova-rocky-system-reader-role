@@ -44,7 +44,8 @@ quota_sets_policies = [
         ]),
     policy.DocumentedRuleDefault(
         POLICY_ROOT % 'show',
-        base.RULE_ADMIN_OR_OWNER,
+        base.policy_or(base.RULE_ADMIN_OR_OWNER,
+                       base.SYSTEM_READER),
         "Show a quota",
         [
             {

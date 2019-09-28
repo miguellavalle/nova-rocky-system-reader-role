@@ -12,11 +12,26 @@
 
 from oslo_policy import policy
 
+
+def policy_or(*args):
+    return ' or '.join(args)
+
+
 COMPUTE_API = 'os_compute_api'
 
 RULE_ADMIN_OR_OWNER = 'rule:admin_or_owner'
 RULE_ADMIN_API = 'rule:admin_api'
 RULE_ANY = '@'
+
+# In Nova 22.0.0 (V release),
+# ``nova.conf [oslo_policy] enforce_scope = True`` is scheduled to become the
+# default. At that point, a policy with ``role:reader`` and
+# scope_types=['system'] will be enforced correctly. Until then, though, if
+# enforce_scope is set to False, such a policy would give more access than
+# desired. That is why in the SYSTEM_READER rule that follows, we need to
+# include ``system_scope:all``. See https://review.opendev.org/#/c/547850 for
+# more details
+SYSTEM_READER = 'role:reader and system_scope:all'
 
 # NOTE(johngarbutt) The base rules here affect so many APIs the list
 # of related API operations has not been populated. It would be

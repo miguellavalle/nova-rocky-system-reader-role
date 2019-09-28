@@ -153,6 +153,7 @@ def authorize(context, action, target, do_raise=True, exc=None):
     """
     init()
     credentials = context.to_policy_values()
+    credentials['system'] = context.system_scope
     if not exc:
         exc = exception.PolicyNotAuthorized
     try:
@@ -177,6 +178,7 @@ def check_is_admin(context):
     init()
     # the target is user-self
     credentials = context.to_policy_values()
+    credentials['system'] = context.system_scope
     target = credentials
     return _ENFORCER.authorize('context_is_admin', target, credentials)
 
